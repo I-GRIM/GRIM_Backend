@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class SignUpRequestDto {
-//    @UserNickname
-    private String nickname;
+    //    @UserNickname
+    private String email;
     private String password;
+    private String nickname;
 }

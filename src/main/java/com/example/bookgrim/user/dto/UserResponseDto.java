@@ -19,7 +19,7 @@ public class UserResponseDto {
     public static UserResponseDto from(User user){
         return new UserResponseDto(
                 user.getNickname(),
-                user.getPassword()
+                user.getNickname()
         );
     }
 }

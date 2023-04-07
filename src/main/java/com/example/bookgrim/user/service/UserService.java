@@ -1,6 +1,9 @@
 package com.example.bookgrim.user.service;
 
+import com.example.bookgrim.common.domain.JwtDto;
+import com.example.bookgrim.user.domain.Role;
 import com.example.bookgrim.user.domain.User;
+import com.example.bookgrim.user.dto.SignInRequestDto;
 import com.example.bookgrim.user.dto.SignUpRequestDto;
 import com.example.bookgrim.user.dto.UserResponseDto;
 import com.example.bookgrim.user.repository.UserRepository;
@@ -21,8 +24,10 @@ public class UserService {
             SignUpRequestDto signUpRequestDto
     ){
         user.signUp(
+                signUpRequestDto.getEmail(),
                 signUpRequestDto.getNickname(),
-                signUpRequestDto.getPassword()
+                signUpRequestDto.getPassword(),
+                Role.USER
         );
 
         return UserResponseDto.from(userRepository.save(user));
