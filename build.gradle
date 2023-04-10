@@ -34,7 +34,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'mysql:mysql-connector-java:8.0.32'
+    implementation 'mysql:mysql-connector-java:8.0.31'
     // implementation 'mysql:mysql-connector-java' 를 위와 같이 버전 추가
 
     // jwt
@@ -43,8 +43,8 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-orgjson:0.11.5'
 
     //오류 해결을 위해 추가로 넣은 의존성
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.10.7'
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.10.7'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 }
 
 tasks.named('test') {

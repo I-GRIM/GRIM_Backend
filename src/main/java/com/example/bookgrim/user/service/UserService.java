@@ -32,4 +32,9 @@ public class UserService {
 
         return UserResponseDto.from(userRepository.save(user));
     }
+
+    public Optional<User> getUserByEmail(String email){
+        return userRepository.findByEmail(email);
+    }
+
 }

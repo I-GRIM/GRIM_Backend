@@ -15,7 +15,7 @@ import javax.persistence.*;
 @Entity
 @DynamicInsert
 @NoArgsConstructor
-@Table(name = "character")
+@Table(name = "story")
 public class Story extends BaseEntity {
     @Id
     @GeneratedValue(generator = "uuid")
@@ -26,7 +26,6 @@ public class Story extends BaseEntity {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "user", nullable = false)
     @ManyToOne
     private User user;
 

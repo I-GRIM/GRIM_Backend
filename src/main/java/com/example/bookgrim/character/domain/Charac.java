@@ -4,7 +4,6 @@ import com.example.bookgrim.story.domain.Story;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -16,8 +15,8 @@ import javax.persistence.*;
 @Entity
 @DynamicInsert
 @NoArgsConstructor
-@Table(name = "character")
-public class Character extends BaseEntity {
+@Table(name = "charac")
+public class Charac extends BaseEntity {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
@@ -30,16 +29,15 @@ public class Character extends BaseEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "story_id", nullable = false)
     @ManyToOne
     private Story story;
 
-    public static Character create(Story story, String name, String imgUrl){
-        Character character = new Character();
-        character.setName(name);
-        character.setImgUrl(imgUrl);
-        character.setStory(story);
+    public static Charac create(Story story, String name, String imgUrl){
+        Charac charac = new Charac();
+        charac.setName(name);
+        charac.setImgUrl(imgUrl);
+        charac.setStory(story);
 
-        return character;
+        return charac;
     }
 }
