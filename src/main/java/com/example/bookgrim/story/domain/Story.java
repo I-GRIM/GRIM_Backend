@@ -15,25 +15,14 @@ import javax.persistence.*;
 @Entity
 @DynamicInsert
 @NoArgsConstructor
-@Table(name = "story")
+@Table(name = "tb_story")
 public class Story extends BaseEntity {
-    @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid")
-    @Column(name = "id", nullable = false, unique = true)
-    private String id;
+
+    @Column(name = "user_id",nullable = false)
+    @ManyToOne
+    private User user;
 
     @Column(name = "title", nullable = false)
     private String title;
 
-    @ManyToOne
-    private User user;
-
-    public static Story create(String title, User user){
-        Story story = new Story();
-        story.setTitle(title);
-        story.setUser(user);
-
-        return story;
-    }
 }

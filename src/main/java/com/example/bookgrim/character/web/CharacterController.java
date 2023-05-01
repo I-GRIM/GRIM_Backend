@@ -1,8 +1,7 @@
 package com.example.bookgrim.character.web;
 
-import com.example.bookgrim.character.dto.NewCharactersImageRequestDto;
-import com.example.bookgrim.character.dto.NewCharactersRequestDto;
-import com.example.bookgrim.character.dto.NewCharactersResponseDto;
+import com.example.bookgrim.character.dto.CharacterCreateReqDto;
+import com.example.bookgrim.character.dto.CharacterCreateResponseDto;
 import com.example.bookgrim.character.service.CharacterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+import java.io.IOException;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -25,14 +25,14 @@ public class CharacterController {
 
     @PostMapping(value = "",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     @ResponseStatus(value = HttpStatus.CREATED)
-    public NewCharactersResponseDto makeNewCharacters(
+    public CharacterCreateResponseDto makeNewCharacters(
             HttpServletRequest response,
             @AuthenticationPrincipal UserDetails userDetails,
-            @RequestPart NewCharactersRequestDto newCharactersRequestDto,
-            @RequestPart List<MultipartFile> files
-            ){
+            @RequestPart CharacterCreateReqDto charactersRequestDto,
+            @RequestPart MultipartFile file
+            ) throws IOException {
 
-        NewCharactersResponseDto newCharactersResponseDto = this.characterService.makeNewCharacter(userDetails, newCharactersRequestDto,files);
+        CharacterCreateResponseDto newCharactersResponseDto = this.characterService.createCharacter(userDetails, charactersRequestDto,file);
 
         return newCharactersResponseDto;
     }
