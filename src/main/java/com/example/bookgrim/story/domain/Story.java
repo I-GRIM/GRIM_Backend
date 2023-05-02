@@ -18,8 +18,10 @@ import javax.persistence.*;
 @Table(name = "tb_story")
 public class Story extends BaseEntity {
 
-    @Column(name = "user_id",nullable = false)
-    @ManyToOne
+
+//    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(referencedColumnName = "id", name = "user_id",nullable = false)
     private User user;
 
     @Column(name = "title", nullable = false)

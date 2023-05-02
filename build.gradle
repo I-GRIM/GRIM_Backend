@@ -34,7 +34,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'mysql:mysql-connector-java:8.0.31'
+    implementation 'mysql:mysql-connector-java:8.0.32'
     // implementation 'mysql:mysql-connector-java' 를 위와 같이 버전 추가
 
     // jwt
