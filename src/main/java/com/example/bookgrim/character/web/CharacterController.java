@@ -3,6 +3,7 @@ package com.example.bookgrim.character.web;
 import com.example.bookgrim.character.dto.CharacterCreateReqDto;
 import com.example.bookgrim.character.dto.CharacterCreateResponseDto;
 import com.example.bookgrim.character.service.CharacterService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -28,8 +29,8 @@ public class CharacterController {
     public CharacterCreateResponseDto makeNewCharacters(
             HttpServletRequest response,
             @AuthenticationPrincipal UserDetails userDetails,
-            @RequestPart CharacterCreateReqDto charactersRequestDto,
-            @RequestPart MultipartFile file
+            @RequestPart(value="value") CharacterCreateReqDto charactersRequestDto,
+            @RequestPart(value="charac") MultipartFile file
             ) throws IOException {
 
         CharacterCreateResponseDto newCharactersResponseDto = this.characterService.createCharacter(userDetails, charactersRequestDto,file);

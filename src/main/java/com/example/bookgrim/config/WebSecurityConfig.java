@@ -33,7 +33,7 @@ public class WebSecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/api/auth/sign-up",
                         "/api/auth/sign-in").permitAll()
-                .antMatchers("/api/auth/test").hasRole("USER")
+                .antMatchers().hasRole("USER")
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
