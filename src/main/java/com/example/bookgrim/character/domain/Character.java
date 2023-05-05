@@ -1,65 +1,46 @@
 package com.example.bookgrim.character.domain;
+
 import com.example.bookgrim.common.domain.BaseEntity;
-import com.example.bookgrim.story.domain.Story;
 import com.example.bookgrim.user.domain.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 
-
-@Getter
 @Entity
-@NoArgsConstructor
+@Getter
 @Table(name = "tb_character")
+@NoArgsConstructor
 public class Character extends BaseEntity {
-
-    @Column(name = "img_url", length = 60, nullable = false)
-    private String imgUrl;
-
-    @Column(name = "character_name", nullable = false)
-    private String name;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(referencedColumnName = "id", name = "user_id",nullable = false)
     private User writer;
 
-//    @ManyToOne
-//    private Story story;
+    @Column(name = "character_name", nullable = false)
+    private String name;
 
-    public Character(
+    @Column(name = "image_url")
+    private String imgUrl;
+
+    private Character(
             User writer,
-            String name,
-            String imgUrl
+            String character_name,
+            String image_url
     ){
         this.writer = writer;
-        this.name = name;
-        this.imgUrl = imgUrl;
-
-
+        this.name = character_name;
+        this.imgUrl = image_url;
     }
 
     public static Character of(
             User writer,
-            String name,
-            String imgUrl
+            String character_name,
+            String image_url
     ){
         return new Character(
                 writer,
-                name,
-                imgUrl
+                character_name,
+                image_url
         );
     }
-//    public void create(
-//            String name,
-//            String imgUrl
-//    ){
-//        Character charac = new Character();
-//        charac.setName(name);
-//        charac.setImgUrl(imgUrl);
-//        charac.setStory(story);
-//
-//    }
 }
