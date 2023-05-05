@@ -38,7 +38,7 @@ public class CharacterService {
                 )
         );
 
-        file.transferTo(new File("E:\\2023.1\\캡스톤\\BookGRIM\\testImgDB\\"+file.getOriginalFilename()));
+        file.transferTo(new File("E:\\2023.1\\캡스톤\\BookGRIM\\testImgDB\\"+charactersRequestDto.getName()+".jpg"));
 
         return CharacterCreateResponseDto.from(
                 character

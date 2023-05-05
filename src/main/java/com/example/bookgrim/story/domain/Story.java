@@ -11,7 +11,6 @@ import javax.persistence.*;
 
 
 @Getter
-@Setter
 @Entity
 @DynamicInsert
 @NoArgsConstructor
@@ -27,7 +26,6 @@ public class Story extends BaseEntity {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private Status status;
 

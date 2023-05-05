@@ -3,12 +3,11 @@ package com.example.bookgrim.story.service;
 import com.example.bookgrim.story.domain.Status;
 import com.example.bookgrim.story.domain.Story;
 import com.example.bookgrim.story.dto.StoryCreateReqDto;
-import com.example.bookgrim.story.dto.StoryCreateResDto;
+import com.example.bookgrim.story.dto.StoryResponseDto;
 import com.example.bookgrim.story.repository.StoryRepository;
 import com.example.bookgrim.user.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -21,7 +20,7 @@ public class StoryService {
     private StoryRepository storyRepository;
 
 
-    public StoryCreateResDto createStory(
+    public StoryResponseDto createStory(
             Optional<User> user,
             StoryCreateReqDto storyCreateReqDto
     ){
@@ -37,8 +36,16 @@ public class StoryService {
                         Status.INCOMPLETED
                 )
         );
-        return StoryCreateResDto.from(
+        return StoryResponseDto.from(
                 story
+        );
+    }
+
+    public StoryResponseDto findById(
+            String storyId
+    ){
+        return StoryResponseDto.from(
+                this.storyRepository.getReferenceById(storyId)
         );
     }
 }
