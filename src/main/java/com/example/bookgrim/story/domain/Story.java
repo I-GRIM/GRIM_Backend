@@ -11,29 +11,40 @@ import javax.persistence.*;
 
 
 @Getter
-@Setter
 @Entity
 @DynamicInsert
 @NoArgsConstructor
-@Table(name = "story")
+@Table(name = "tb_story")
 public class Story extends BaseEntity {
-    @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid")
-    @Column(name = "id", nullable = false, unique = true)
-    private String id;
+
+
+//    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(referencedColumnName = "id", name = "user_id",nullable = false)
+    private User writer;
 
     @Column(name = "title", nullable = false)
     private String title;
 
-    @ManyToOne
-    private User user;
+    @Column(name = "status", nullable = false)
+    private Status status;
 
-    public static Story create(String title, User user){
-        Story story = new Story();
-        story.setTitle(title);
-        story.setUser(user);
+    private Story(String title, User writer,Status status){
+        this.title = title;
+        this.writer = writer;
+        this.status = status;
 
-        return story;
+    }
+    public static Story of(
+            String title,
+            User writer,
+            Status status
+
+    ){
+        return new Story(
+                title,
+                writer,
+                status
+        );
     }
 }
