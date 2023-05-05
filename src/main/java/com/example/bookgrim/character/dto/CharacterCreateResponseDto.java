@@ -27,7 +27,7 @@ public class CharacterCreateResponseDto {
             Character character
     ){
         return new CharacterCreateResponseDto(
-                character.getWriter(),
+                character.getWriter().getId(),
                 character.getName(),
                 character.getImgUrl()
         );

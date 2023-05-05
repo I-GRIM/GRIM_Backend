@@ -39,6 +39,8 @@ public enum ErrorCode {
      * 409 CONFLICT
      */
 
+    CONFLICT(4090),
+
     /**
      * 500 Internal Server Error
      */

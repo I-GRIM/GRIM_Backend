@@ -25,9 +25,6 @@ public class StoryService {
             StoryCreateReqDto storyCreateReqDto
     ){
         User writer = user.get();
-        log.info(storyCreateReqDto.getTitle());
-        log.info(writer.getEmail());
-        log.info(writer.getId());
 
         Story story = this.storyRepository.save(
                 Story.of(

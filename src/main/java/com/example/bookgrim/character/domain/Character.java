@@ -22,14 +22,15 @@ public class Character extends BaseEntity {
     @Column(name = "character_name", nullable = false)
     private String name;
 
-    @Column(name = "user_id", nullable = false)
-    private String writer;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(referencedColumnName = "id", name = "user_id",nullable = false)
+    private User writer;
 
 //    @ManyToOne
 //    private Story story;
 
     public Character(
-            String writer,
+            User writer,
             String name,
             String imgUrl
     ){
@@ -41,7 +42,7 @@ public class Character extends BaseEntity {
     }
 
     public static Character of(
-            String writer,
+            User writer,
             String name,
             String imgUrl
     ){

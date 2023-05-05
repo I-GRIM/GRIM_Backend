@@ -3,11 +3,16 @@ package com.example.bookgrim.character.service;
 import com.example.bookgrim.character.domain.Character;
 import com.example.bookgrim.character.dto.CharacterCreateReqDto;
 import com.example.bookgrim.character.dto.CharacterCreateResponseDto;
+import com.example.bookgrim.character.dto.CharacterReqDto;
+import com.example.bookgrim.character.dto.CharacterResDto;
 import com.example.bookgrim.character.repository.CharacterRepository;
 import com.example.bookgrim.common.exception.BadRequestException;
 import com.example.bookgrim.common.exception.ErrorCode;
+import com.example.bookgrim.common.service.AwsS3Service;
+import com.example.bookgrim.user.domain.User;
 import com.example.bookgrim.user.service.UserService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,35 +20,51 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
+@Slf4j
 public class CharacterService {
     private CharacterRepository characterRepository;
+    private AwsS3Service awsS3Service;
     private UserService userService;
 
     public CharacterCreateResponseDto createCharacter(
-            UserDetails userDetails,
+            Optional<User> writer,
             CharacterCreateReqDto charactersRequestDto,
             MultipartFile file
     ) throws IOException {
 
         //validtion 필요
+        String imgUrl = awsS3Service.uploadImage(file);
 
         Character character = this.characterRepository.save(
                 Character.of(
-                        userDetails.getUsername(),
+                        writer.get(),
                         charactersRequestDto.getName(),
-                        "imgurl"
+                        imgUrl
                 )
         );
-
-        file.transferTo(new File("E:\\2023.1\\캡스톤\\BookGRIM\\testImgDB\\"+charactersRequestDto.getName()+".jpg"));
-
         return CharacterCreateResponseDto.from(
                 character
                 );
     }
+
+    public List<CharacterResDto> findByName(
+            CharacterReqDto characterReqDto
+    ){
+        log.info(characterReqDto.getCharacterName().get(0));
+        List<CharacterResDto> characters = characterReqDto.getCharacterName()
+                .stream().map(character ->
+                        CharacterResDto.from(characterRepository.findByName(character)))
+                .collect(Collectors.toList());
+
+        return characters;
+
+    }
+
 //    public NewCharactersResponseDto makeNewCharacter(UserDetails userDetails, NewCharactersRequestDto newCharactersRequestDto, List<MultipartFile> files) {
 //        List<String> characterList = newCharactersRequestDto.getCharacterList();
 //        String title = newCharactersRequestDto.getTitle();

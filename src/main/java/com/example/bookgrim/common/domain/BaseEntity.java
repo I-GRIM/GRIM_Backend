@@ -21,10 +21,10 @@ public class BaseEntity {
     @Column(name = "id", nullable = false, unique = true)
     private String id;
     @CreatedDate
-    @Column(name = "createdAt", updatable = false)
+    @Column(name = "createdAt", updatable = true)
     private LocalDateTime createdAt;
     @LastModifiedDate
-    @Column(name = "updatedAt")
+    @Column(name = "updatedAt",updatable = true)
     private LocalDateTime updatedAt;
 
     protected BaseEntity(String id) {
