@@ -43,6 +43,10 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-root:0.11.5'
     implementation 'io.jsonwebtoken:jjwt-orgjson:0.11.5'
 
+    // aws
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    testImplementation 'io.findify:s3mock_2.12:0.2.4'
+
     //오류 해결을 위해 추가로 넣은 의존성
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
