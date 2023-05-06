@@ -3,10 +3,12 @@ package com.example.bookgrim.user.domain;
 import com.example.bookgrim.common.domain.BaseEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 
+@Slf4j
 @Entity
 @Getter
 @Table(name = "tb_user")
@@ -61,5 +63,14 @@ public class User extends BaseEntity{
         this.nickname = nickname;
         this.password = password;
         this.role = role;
+    }
+
+    public boolean matchPassword(String password){
+        log.info(password);
+        log.info(this.getPassword());
+        if(this.password.equals(password)){
+            return true;
+        }
+        else return false;
     }
 }

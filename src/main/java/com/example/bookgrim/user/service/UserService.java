@@ -18,21 +18,6 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
 
-    @Transactional
-    public UserResponseDto signUp(
-            User user,
-            SignUpRequestDto signUpRequestDto
-    ){
-        user.signUp(
-                signUpRequestDto.getEmail(),
-                signUpRequestDto.getNickname(),
-                signUpRequestDto.getPassword(),
-                Role.USER
-        );
-
-        return UserResponseDto.from(userRepository.save(user));
-    }
-
     public Optional<User> getUserByEmail(String email){
         return userRepository.findByEmail(email);
     }
