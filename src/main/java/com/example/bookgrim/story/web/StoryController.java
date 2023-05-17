@@ -46,10 +46,11 @@ public class StoryController {
     public PageResponseDto createPage(
             HttpServletRequest response,
             @PathVariable String storyId,
-            @RequestBody PageCreateReqDto pageCreateReqDto,
-            @RequestPart(value="background") MultipartFile file
+            @RequestPart(value="value") PageCreateReqDto pageCreateReqDto,
+            @RequestPart(value="background") MultipartFile back,
+            @RequestPart(value="character")MultipartFile character
     ) throws IOException {
-        return this.pageService.createPage(storyId, pageCreateReqDto,file);
+        return this.pageService.createPage(storyId, pageCreateReqDto,back, character);
     }
 
     @GetMapping("")
@@ -59,11 +60,11 @@ public class StoryController {
         return this.storyService.findAll();
     }
 //
-//    @GetMapping()
-//    public StoryResDto findyByStoryId(
-//
-//    ){
-//
-//    }
+    @GetMapping("/{storyId}")
+    public List<PageResponseDto> findPagesByStoryId(
+            @PathVariable String storyId
+    ){
+        return this.pageService.findByStoryId(storyId);
+    }
 }
 

@@ -12,6 +12,7 @@ import java.util.Optional;
 public interface StoryRepository extends JpaRepository<Story, String> {
     Optional<Story> findById(String id);
 
-    @Query("SELECT s FROM Story s ORDER BY s.id DESC")
+    @Query("SELECT s FROM Story s ORDER BY s.createdAt")
     List<Story> findAllDesc();
+
 }
