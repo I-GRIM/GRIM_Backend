@@ -14,9 +14,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -43,17 +46,18 @@ public class StoryController {
     public PageResponseDto createPage(
             HttpServletRequest response,
             @PathVariable String storyId,
-            @RequestBody PageCreateReqDto pageCreateReqDto
-    ){
-        return this.pageService.createPage(storyId, pageCreateReqDto);
+            @RequestBody PageCreateReqDto pageCreateReqDto,
+            @RequestPart(value="background") MultipartFile file
+    ) throws IOException {
+        return this.pageService.createPage(storyId, pageCreateReqDto,file);
     }
 
-//    @GetMapping()
-//    public List<StoryResDto> findAllStory(
-//
-//    ){
-//
-//    }
+    @GetMapping("")
+    public List<StoryResponseDto> findAllStory(
+            HttpServletRequest response
+    ){
+        return this.storyService.findAll();
+    }
 //
 //    @GetMapping()
 //    public StoryResDto findyByStoryId(

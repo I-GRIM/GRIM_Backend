@@ -38,7 +38,7 @@ public class CharacterService {
     ) throws IOException {
 
         //validtion 필요
-        String imgUrl = awsS3Service.uploadImage(file);
+        String imgUrl = awsS3Service.uploadImage("character",file);
 
         Character character = this.characterRepository.save(
                 Character.of(

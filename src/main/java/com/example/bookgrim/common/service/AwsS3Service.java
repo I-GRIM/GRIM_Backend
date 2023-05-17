@@ -25,7 +25,7 @@ public class AwsS3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public String uploadImage(MultipartFile multipartFile) {
+    public String uploadImage(String bucket_directory,MultipartFile multipartFile) {
         // 메타데이터 설정
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentType(multipartFile.getContentType());
@@ -33,7 +33,7 @@ public class AwsS3Service {
 
         // 실제 S3 bucket 디렉토리명 설정
         // 파일명 중복을 방지하기 위한 UUID 추가
-        String fileName = S3_BUCKET_DIRECTORY_NAME + "/" + UUID.randomUUID() + "." + multipartFile.getOriginalFilename();
+        String fileName = bucket_directory + "/" + UUID.randomUUID() + "." + multipartFile.getOriginalFilename();
 
         try (InputStream inputStream = multipartFile.getInputStream()) {
             amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
@@ -44,6 +44,7 @@ public class AwsS3Service {
         }
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
+
 
 
 }

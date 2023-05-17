@@ -1,5 +1,6 @@
 package com.example.bookgrim.story.service;
 
+import com.example.bookgrim.character.dto.CharacterResDto;
 import com.example.bookgrim.story.domain.Status;
 import com.example.bookgrim.story.domain.Story;
 import com.example.bookgrim.story.dto.StoryCreateReqDto;
@@ -10,7 +11,9 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -44,5 +47,14 @@ public class StoryService {
         return StoryResponseDto.from(
                 this.storyRepository.getReferenceById(storyId)
         );
+    }
+
+    public List<StoryResponseDto> findAll(){
+        List<StoryResponseDto> storys = storyRepository.findAllDesc().
+                stream().map(story ->
+                        StoryResponseDto.from(story))
+                .collect(Collectors.toList());
+
+        return storys;
     }
 }
