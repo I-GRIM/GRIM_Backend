@@ -11,14 +11,34 @@ import com.example.bookgrim.common.exception.ErrorCode;
 import com.example.bookgrim.common.service.AwsS3Service;
 import com.example.bookgrim.user.domain.User;
 import com.example.bookgrim.user.service.UserService;
+import io.netty.channel.ChannelOption;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.*;
+import org.springframework.http.client.MultipartBodyBuilder;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriComponentsBuilder;
+import reactor.netty.http.client.HttpClient;
 
-import java.io.File;
-import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,6 +51,52 @@ public class CharacterService {
     private AwsS3Service awsS3Service;
     private UserService userService;
 
+    public byte[] createCharacterIllustration(String prompt, String path) throws IOException {
+        URI uri = URI.create("http://35.216.5.42:8080/api");
+        Resource img = new FileSystemResource(path);
+        MultipartBodyBuilder builder = new MultipartBodyBuilder();
+        builder.part("prompt",prompt);
+        builder.part("image",img).header("Content-Disposition",
+                "form-data; name= image; filename=" + img.getFilename());
+
+        HttpClient httpClient = HttpClient.create()
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 300000)
+                .responseTimeout(Duration.ofSeconds(300));
+
+        ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
+                .codecs(clientCodecConfigurer -> clientCodecConfigurer.defaultCodecs().maxInMemorySize(-1))
+                .build();
+
+        WebClient client = WebClient.builder()
+                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .exchangeStrategies(exchangeStrategies)
+                .build();
+
+        byte[] response = client.post()
+                .uri(uri)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .body(BodyInserters.fromMultipartData(builder.build()))
+                .exchange()
+                .block()
+                .bodyToMono(byte[].class)
+                .doOnError(e -> log.error("Mapping Error : ", e))
+                .block();
+//        byte[] response =  WebClient.create()
+//                .method(HttpMethod.POST)
+//                .uri(uri)
+//                .contentType(MediaType.MULTIPART_FORM_DATA)
+//                .body(BodyInserters.fromMultipartData(builder.build()))
+//                .exchange()
+//                .block()
+//                .bodyToMono(byte[].class)
+//                .doOnError(e -> log.error("Mapping Error : ", e))
+//                .block();
+
+        System.out.println("완료...");
+        System.out.println(response);
+        return response;
+    }
+
     public CharacterCreateResponseDto createCharacter(
             Optional<User> writer,
             CharacterCreateReqDto charactersRequestDto,
@@ -38,8 +104,23 @@ public class CharacterService {
     ) throws IOException {
 
         //validtion 필요
-        String imgUrl = awsS3Service.uploadImage(file);
-
+        // AI 서버로 요청
+        // 먼저 멀티 파트 파일을 디스크에 저장
+        String path = "C:\\Users\\99san\\Workspace\\GRIM_Backend\\src\\main\\resources\\" + file.getOriginalFilename();
+        File image = new File(path);
+        if(!image.exists()){
+            image.mkdirs();
+        }
+        file.transferTo(image);
+        // AI 서버로 전달
+        String prompt = "ghibli, cute boy";
+        byte[] img = createCharacterIllustration(prompt, path);
+        Path paths = Paths.get("C:\\Users\\99san\\Workspace\\GRIM_Backend\\src\\main\\resources\\out.jpg");
+        Files.write(paths, img);
+        // 결과 이미지 업로드
+        String imgUrl = awsS3Service.uploadImage(img, file.getOriginalFilename());
+        // 디스크에서 파일 삭제
+        //image.delete();
         Character character = this.characterRepository.save(
                 Character.of(
                         writer.get(),

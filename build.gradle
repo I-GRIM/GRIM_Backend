@@ -36,6 +36,8 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'mysql:mysql-connector-java:8.0.32'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
     // implementation 'mysql:mysql-connector-java' 를 위와 같이 버전 추가
 
     // jwt
