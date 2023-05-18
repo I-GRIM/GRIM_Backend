@@ -87,6 +87,43 @@ public class CharacterService {
         return response;
     }
 
+    public byte[] removeBackIllustration(String character) throws IOException {
+        URI uri = URI.create("http://35.216.5.42:8080/api/remove");
+        log.info(character);
+        // URI 연결하고 AI 서버 내부에서 remove랑 merge하고 byte image반환
+        Resource back_img = new FileSystemResource(character);
+        MultipartBodyBuilder builder = new MultipartBodyBuilder();
+        builder.part("character", back_img).header("Content-Disposition",
+                "form-data; name= character; filename=" + back_img.getFilename());
+
+        HttpClient httpClient = HttpClient.create()
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 300000)
+                .responseTimeout(Duration.ofSeconds(300));
+
+        ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
+                .codecs(clientCodecConfigurer -> clientCodecConfigurer.defaultCodecs().maxInMemorySize(-1))
+                .build();
+
+        WebClient client = WebClient.builder()
+                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .exchangeStrategies(exchangeStrategies)
+                .build();
+
+        byte[] response = client.post()
+                .uri(uri)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .body(BodyInserters.fromMultipartData(builder.build()))
+                .exchange()
+                .block()
+                .bodyToMono(byte[].class)
+                .doOnError(e -> log.error("Mapping Error : ", e))
+                .block();
+
+        System.out.println("완료...");
+        System.out.println(response);
+        return response;
+    }
+
     public CharacterCreateResponseDto createCharacter(
             Optional<User> writer,
             CharacterCreateReqDto charactersRequestDto,
@@ -118,8 +155,11 @@ public class CharacterService {
 
         Path paths = Paths.get("/home/ubuntu/cache/"+file.getOriginalFilename());
         Files.write(paths, img);
+        log.info("no remove , just control image path : "+paths.toString());
+        byte[] rm_img = removeBackIllustration(paths.toString());
+
         // 결과 이미지 업로드
-        String imgUrl = awsS3Service.uploadImage(img, file.getOriginalFilename());
+        String imgUrl = awsS3Service.uploadImage(rm_img, file.getOriginalFilename());
         // 디스크에서 파일 삭제
         image.delete();
         Character character = this.characterRepository.save(
@@ -147,28 +187,4 @@ public class CharacterService {
 
     }
 
-//    public NewCharactersResponseDto makeNewCharacter(UserDetails userDetails, NewCharactersRequestDto newCharactersRequestDto, List<MultipartFile> files) {
-//        List<String> characterList = newCharactersRequestDto.getCharacterList();
-//        String title = newCharactersRequestDto.getTitle();
-//
-//        User user = userService.getUserByEmail(userDetails.getUsername()).orElseThrow(() -> new NotFoundException(NOT_FOUND_USER, "로그인 유저 정보가 없습니다"));
-//
-//        //TODO: characterList, files 길이 동일한지 확인
-//        if(characterList.toArray().length != files.toArray().length){
-//            throw new BadRequestException(ErrorCode.CHARACTER_LEN, "캐릭터 정보가 정확하지 않습니다.");
-//        }
-//        //TODO: Story DB에 생성요청
-//        Story newStory = Story.create(title, user);
-//        //TODO: Character DB에 생성요청 + 이미지 AI로 전달
-//        //AI로 API 요청 -> img url 반환
-//        List<String> characterImages = new ArrayList<>();
-//        //TODO: S3 서버에 저장된 이미지를 반환 (시간이 오래걸릴 듯)
-//        characterImages.add("1");
-//        characterImages.add("2");
-//        for(String characterName : characterList){
-//            Charac character = Charac.create(newStory, characterName, "imgUrl");
-//        }
-//
-//        return new NewCharactersResponseDto(characterImages);
-//    }
 }
