@@ -29,22 +29,31 @@ public class Story extends BaseEntity {
     @Column(name = "status", nullable = false)
     private Status status;
 
-    private Story(String title, User writer,Status status){
+    @Column(name="title_img")
+    private  String title_img;;
+
+    private Story(String title, User writer,Status status,String title_img){
         this.title = title;
         this.writer = writer;
         this.status = status;
-
+        this.title_img = title_img;
     }
     public static Story of(
             String title,
             User writer,
-            Status status
+            Status status,
+            String title_img
 
     ){
         return new Story(
                 title,
                 writer,
-                status
+                status,
+                title_img
         );
+    }
+
+    public  void updateTitleImg(String title_img){
+        this.title_img = title_img;
     }
 }

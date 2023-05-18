@@ -33,7 +33,8 @@ public class StoryService {
                 Story.of(
                         storyCreateReqDto.getTitle(),
                         writer,
-                        Status.INCOMPLETED
+                        Status.INCOMPLETED,
+                        "0"
                 )
         );
         return StoryResponseDto.from(

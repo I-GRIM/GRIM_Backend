@@ -57,6 +57,7 @@ public class StoryController {
     public List<StoryResponseDto> findAllStory(
             HttpServletRequest response
     ){
+        // 일단은 맛없게 가자
         return this.storyService.findAll();
     }
 //

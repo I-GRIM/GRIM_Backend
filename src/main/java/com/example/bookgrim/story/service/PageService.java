@@ -67,9 +67,9 @@ public class PageService {
                 )
         );
 
-//        //로컬 위치
-//        String img_path = "E:\\2023.1\\캡스톤\\GRIM_Backend\\src\\main\\resources\\";
-        String img_path = "/home/ubuntu/cache/";
+        //로컬 위치
+        String img_path = "E:\\2023.1\\캡스톤\\GRIM_Backend\\src\\main\\resources\\";
+//        String img_path = "/home/ubuntu/cache/";
 
 
         File back = new File(img_path+background.getOriginalFilename());
@@ -99,6 +99,11 @@ public class PageService {
                         imgUrl
                 )
         );
+
+        if( story.getTitle_img().equals("0")){
+            story.updateTitleImg(imgUrl);
+            this.storyRepository.save(story);
+        }
 
         return PageResponseDto.from(page);
 
@@ -155,7 +160,6 @@ public class PageService {
                         "Story를 찾을 수 없습니다."
                 )
         );
-
 
         List<PageResponseDto> pages = pageRepository.findByStoryId(storyId).
                 stream().map(page ->

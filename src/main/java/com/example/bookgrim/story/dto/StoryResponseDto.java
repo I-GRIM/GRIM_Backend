@@ -14,8 +14,7 @@ public class StoryResponseDto {
     private String user_id;
     private String title;
     private Status status;
-
-
+    private String title_img_url;
     public static StoryResponseDto from(
             Story story
     ){
@@ -23,7 +22,8 @@ public class StoryResponseDto {
                 story.getId(),
                 story.getWriter().getId(),
                 story.getTitle(),
-                story.getStatus()
+                story.getStatus(),
+                "0"
         );
     }
 }
