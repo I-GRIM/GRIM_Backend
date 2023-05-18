@@ -76,7 +76,11 @@ public class PageService {
         character.transferTo(charac);
 
 
-        byte[] page_img = createPageIllustration("test", img_path + background.getOriginalFilename(), img_path + character.getOriginalFilename());
+        byte[] page_img = createPageIllustration("test",
+                img_path + background.getOriginalFilename(),
+                img_path + character.getOriginalFilename(),
+                pageCreateReqDto.getX(),
+                pageCreateReqDto.getY());
         Path paths = Paths.get(img_path + "output.png");
         Files.write(paths, page_img);
         String imgUrl = awsS3Service.uploadImage(page_img, storyId+"_"+pageCreateReqDto.getPageNum()+".png");
@@ -97,7 +101,7 @@ public class PageService {
 
     }
 
-    public byte[] createPageIllustration(String prompt, String backpath, String frontpath) throws IOException {
+    public byte[] createPageIllustration(String prompt, String backpath, String frontpath, int x, int y) throws IOException {
         URI uri = URI.create("http://35.216.5.42:8080/api/createPage");
         log.info(backpath);
         log.info(frontpath);
@@ -106,6 +110,8 @@ public class PageService {
         Resource charac_img = new FileSystemResource(frontpath);
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         builder.part("prompt",prompt);
+        builder.part("x",x);
+        builder.part("y",y);
         builder.part("back", back_img).header("Content-Disposition",
                 "form-data; name= back; filename=" + back_img.getFilename());
         builder.part("character",charac_img).header("Content-Disposition",

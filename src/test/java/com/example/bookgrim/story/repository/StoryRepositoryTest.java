@@ -17,10 +17,10 @@ class StoryRepositoryTest {
 
     @BeforeEach
     public void insertStory(){
-        for(int i = 1 ; i <=5 ; i++){
-            Story story = Story.of("title"+i,"writer"+im, Status.COMPLETED);
-            storyRepository.save(story);
-        }
+//        for(int i = 1 ; i <=5 ; i++){
+//            Story story = Story.of("title"+i,"writer"+im, Status.COMPLETED);
+//            storyRepository.save(story);
+//        }
     }
 //    https://ugo04.tistory.com/97
 

@@ -15,4 +15,6 @@ public class PageCreateReqDto {
     private List<String> characterPrompt;
     private String imgUrl;
     private int pageNum;
+    private int x;
+    private int y;
 }
