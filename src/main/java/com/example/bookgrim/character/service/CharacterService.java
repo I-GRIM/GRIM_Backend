@@ -137,8 +137,8 @@ public class CharacterService {
         log.info("character name :"+file.getOriginalFilename());
 
 //        // local cache 주소
-//        String path = "E:\\2023.1\\캡스톤\\GRIM_Backend\\src\\main\\resources\\" + file.getOriginalFilename();
-        String path = "/home/ubuntu/cache/" + file.getOriginalFilename();
+        String path = "E:\\2023.1\\캡스톤\\GRIM_Backend\\src\\main\\resources\\" + file.getOriginalFilename();
+//        String path = "/home/ubuntu/cache/" + file.getOriginalFilename();
         log.info("file path : "+path);
         File image = new File(path);
         if(!image.exists()){
@@ -147,19 +147,19 @@ public class CharacterService {
         log.info("file image path : "+image.getAbsolutePath());
         file.transferTo(image);
         // AI 서버로 전달
-        String prompt = "ghibli, cute boy";
+        String prompt = "ghibli, cute boy, (white background)";
         byte[] img = createCharacterIllustration(prompt, path);
 
 //        // local cache 주소
-//        Path paths = Paths.get("E:\\2023.1\\캡스톤\\GRIM_Backend\\src\\main\\resources\\charcter_out.png");
+        Path paths = Paths.get("E:\\2023.1\\캡스톤\\GRIM_Backend\\src\\main\\resources\\charcter_out.png");
 
-        Path paths = Paths.get("/home/ubuntu/cache/"+file.getOriginalFilename());
+//        Path paths = Paths.get("/home/ubuntu/cache/"+charactersRequestDto.getName()+".png");
         Files.write(paths, img);
         log.info("no remove , just control image path : "+paths.toString());
         byte[] rm_img = removeBackIllustration(paths.toString());
 
         // 결과 이미지 업로드
-        String imgUrl = awsS3Service.uploadImage(rm_img, file.getOriginalFilename());
+        String imgUrl = awsS3Service.uploadImage(rm_img, charactersRequestDto.getName()+".png");
         // 디스크에서 파일 삭제
         image.delete();
         Character character = this.characterRepository.save(
