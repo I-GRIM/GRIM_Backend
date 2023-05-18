@@ -23,7 +23,7 @@ public class StoryResponseDto {
                 story.getWriter().getId(),
                 story.getTitle(),
                 story.getStatus(),
-                "0"
+                story.getTitle_img()
         );
     }
 }
