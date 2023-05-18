@@ -12,6 +12,7 @@ public class PageResponseDto {
     private String storyId;
     private int pageOrder;
     private String imgUrl;
+    private String content;
 
     public static PageResponseDto from(
             Page page
@@ -19,7 +20,8 @@ public class PageResponseDto {
         return new PageResponseDto(
                 page.getStory().getId(),
                 page.getPage_order(),
-                page.getPage_image_url()
+                page.getPage_image_url(),
+                page.getContent()
         );
     }
 }
