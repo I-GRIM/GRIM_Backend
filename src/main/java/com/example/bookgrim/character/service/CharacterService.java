@@ -147,7 +147,7 @@ public class CharacterService {
         log.info("file image path : "+image.getAbsolutePath());
         file.transferTo(image);
         // AI 서버로 전달
-        String prompt = "ghibli, happy boy, t-shirt, pants ,(white background)";
+        String prompt = "ghibli, happy boy,(white background)";
         byte[] img = createCharacterIllustration(prompt, path);
 
 ////        // local cache 주소
