@@ -66,7 +66,10 @@ public class PageService {
                         "Story를 찾을 수 없습니다."
                 )
         );
-        String img_path = "E:\\2023.1\\캡스톤\\GRIM_Backend\\src\\main\\resources\\";
+
+//        //로컬 위치
+//        String img_path = "E:\\2023.1\\캡스톤\\GRIM_Backend\\src\\main\\resources\\";
+        String img_path = "/home/ubuntu/cache/";
 
 
         File back = new File(img_path+background.getOriginalFilename());
