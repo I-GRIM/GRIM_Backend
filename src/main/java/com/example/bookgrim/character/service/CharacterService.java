@@ -98,7 +98,10 @@ public class CharacterService {
         // AI 서버로 요청
         // 먼저 멀티 파트 파일을 디스크에 저장
         log.info("character name :"+file.getOriginalFilename());
-        String path = "E:\\2023.1\\캡스톤\\GRIM_Backend\\src\\main\\resources\\" + file.getOriginalFilename();
+
+//        // local cache 주소
+//        String path = "E:\\2023.1\\캡스톤\\GRIM_Backend\\src\\main\\resources\\" + file.getOriginalFilename();
+        String path = "/home/ubuntu/cache/" + file.getOriginalFilename();
         File image = new File(path);
         if(!image.exists()){
             image.mkdirs();
@@ -107,12 +110,16 @@ public class CharacterService {
         // AI 서버로 전달
         String prompt = "ghibli, cute boy";
         byte[] img = createCharacterIllustration(prompt, path);
-        Path paths = Paths.get("E:\\2023.1\\캡스톤\\GRIM_Backend\\src\\main\\resources\\charcter_out.png");
+
+//        // local cache 주소
+//        Path paths = Paths.get("E:\\2023.1\\캡스톤\\GRIM_Backend\\src\\main\\resources\\charcter_out.png");
+
+        Path paths = Paths.get("/home/ubuntu/cache/"+file.getOriginalFilename()+"_.png");
         Files.write(paths, img);
         // 결과 이미지 업로드
         String imgUrl = awsS3Service.uploadImage(img, file.getOriginalFilename());
         // 디스크에서 파일 삭제
-        //image.delete();
+        image.delete();
         Character character = this.characterRepository.save(
                 Character.of(
                         writer.get(),
