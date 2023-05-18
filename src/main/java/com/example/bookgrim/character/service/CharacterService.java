@@ -102,10 +102,12 @@ public class CharacterService {
 //        // local cache 주소
 //        String path = "E:\\2023.1\\캡스톤\\GRIM_Backend\\src\\main\\resources\\" + file.getOriginalFilename();
         String path = "/home/ubuntu/cache/" + file.getOriginalFilename();
+        log.info("file path : "+path);
         File image = new File(path);
         if(!image.exists()){
             image.mkdirs();
         }
+        log.info("file image path : "+image.getAbsolutePath());
         file.transferTo(image);
         // AI 서버로 전달
         String prompt = "ghibli, cute boy";
