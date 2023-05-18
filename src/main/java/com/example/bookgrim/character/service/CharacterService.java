@@ -136,9 +136,9 @@ public class CharacterService {
         // 먼저 멀티 파트 파일을 디스크에 저장
         log.info("character name :"+file.getOriginalFilename());
 
-//        // local cache 주소
-        String path = "E:\\2023.1\\캡스톤\\GRIM_Backend\\src\\main\\resources\\" + file.getOriginalFilename();
-//        String path = "/home/ubuntu/cache/" + file.getOriginalFilename();
+////        // local cache 주소
+//        String path = "E:\\2023.1\\캡스톤\\GRIM_Backend\\src\\main\\resources\\" + file.getOriginalFilename();
+        String path = "/home/ubuntu/cache/" + file.getOriginalFilename();
         log.info("file path : "+path);
         File image = new File(path);
         if(!image.exists()){
@@ -150,10 +150,10 @@ public class CharacterService {
         String prompt = "ghibli, cute boy, (white background)";
         byte[] img = createCharacterIllustration(prompt, path);
 
-//        // local cache 주소
-        Path paths = Paths.get("E:\\2023.1\\캡스톤\\GRIM_Backend\\src\\main\\resources\\charcter_out.png");
+////        // local cache 주소
+//        Path paths = Paths.get("E:\\2023.1\\캡스톤\\GRIM_Backend\\src\\main\\resources\\charcter_out.png");
 
-//        Path paths = Paths.get("/home/ubuntu/cache/"+charactersRequestDto.getName()+".png");
+        Path paths = Paths.get("/home/ubuntu/cache/"+charactersRequestDto.getName()+".png");
         Files.write(paths, img);
         log.info("no remove , just control image path : "+paths.toString());
         byte[] rm_img = removeBackIllustration(paths.toString());
