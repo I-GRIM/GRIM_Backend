@@ -116,7 +116,7 @@ public class CharacterService {
 //        // local cache 주소
 //        Path paths = Paths.get("E:\\2023.1\\캡스톤\\GRIM_Backend\\src\\main\\resources\\charcter_out.png");
 
-        Path paths = Paths.get("/home/ubuntu/cache/"+file.getOriginalFilename()+"_.png");
+        Path paths = Paths.get("/home/ubuntu/cache/"+file.getOriginalFilename());
         Files.write(paths, img);
         // 결과 이미지 업로드
         String imgUrl = awsS3Service.uploadImage(img, file.getOriginalFilename());
