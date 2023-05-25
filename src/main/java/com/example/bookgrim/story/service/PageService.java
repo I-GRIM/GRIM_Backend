@@ -118,8 +118,8 @@ public class PageService {
         Resource charac_img = new FileSystemResource(frontpath);
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         builder.part("prompt",prompt);
-        builder.part("x",Integer.toString(x));
-        builder.part("y",Integer.toString(y));
+        builder.part("x",x);
+        builder.part("y",y);
         builder.part("back", back_img).header("Content-Disposition",
                 "form-data; name= back; filename=" + back_img.getFilename());
         builder.part("character",charac_img).header("Content-Disposition",
