@@ -17,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileItem;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -40,6 +42,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -78,6 +81,28 @@ public class PageService {
         background.transferTo(back);
         character.transferTo(charac);
 
+        ArrayList<String> grammar = checkGrammar(pageCreateReqDto.getContent());
+        if ( !grammar.isEmpty() ) {
+            JSONObject res = new JSONObject();
+            JSONArray arr = new JSONArray();
+
+            for (String s :grammar){
+                System.out.println(s);
+                JSONObject obj = new JSONObject();
+                String[] result = s.split(" ");
+                obj.put("idx",result[0]);
+                obj.put("origin",result[1]);
+                obj.put("spell",result[2]);
+                arr.put(obj);
+            }
+
+            res.put("spellList", arr);
+
+            throw new BadRequestException(
+                    ErrorCode.INVALID_INPUT_VALUE,
+                    res.toString()
+            );
+        }
 
         byte[] page_img = createPageIllustration("test",
                 img_path + background.getOriginalFilename(),
@@ -109,8 +134,41 @@ public class PageService {
 
     }
 
+    public ArrayList<String> checkGrammar(String content){
+        URI uri = URI.create("http://35.215.56.131:8080/api/checkGrammar");
+        log.info(content);
+
+        MultipartBodyBuilder builder = new MultipartBodyBuilder();
+        builder.part("content",content);
+
+        HttpClient httpClient = HttpClient.create()
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 300000)
+                .responseTimeout(Duration.ofSeconds(300));
+
+        ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
+                .codecs(clientCodecConfigurer -> clientCodecConfigurer.defaultCodecs().maxInMemorySize(-1))
+                .build();
+
+        WebClient client = WebClient.builder()
+                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .exchangeStrategies(exchangeStrategies)
+                .build();
+
+        ArrayList<String> response = client.post()
+                .uri(uri)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .body(BodyInserters.fromMultipartData(builder.build()))
+                .exchange()
+                .block()
+                .bodyToMono(ArrayList.class)
+                .doOnError(e -> log.error("Mapping Error : ", e))
+                .block();
+
+        return response;
+    }
+
     public byte[] createPageIllustration(String prompt, String backpath, String frontpath, int x, int y) throws IOException {
-        URI uri = URI.create("http://35.216.5.42:8080/api/createPage");
+        URI uri = URI.create("http://35.215.56.131:8080/api/createPage");
         log.info(backpath);
         log.info(frontpath);
         // URI 연결하고 AI 서버 내부에서 remove랑 merge하고 byte image반환
