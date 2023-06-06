@@ -52,7 +52,7 @@ public class CharacterService {
     private UserService userService;
 
     public byte[] createCharacterIllustration(String prompt, String path) throws IOException {
-        URI uri = URI.create("http://10.162.0.2:8080/api");
+        URI uri = URI.create("http://35.215.56.131:8080/api");
         Resource img = new FileSystemResource(path);
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         builder.part("prompt",prompt);
@@ -88,7 +88,7 @@ public class CharacterService {
     }
 
     public byte[] removeBackIllustration(String character) throws IOException {
-        URI uri = URI.create("http://10.162.0.2:8080/api/remove");
+        URI uri = URI.create("http://35.215.56.131:8080/api/remove");
         log.info(character);
         // URI 연결하고 AI 서버 내부에서 remove랑 merge하고 byte image반환
         Resource back_img = new FileSystemResource(character);
