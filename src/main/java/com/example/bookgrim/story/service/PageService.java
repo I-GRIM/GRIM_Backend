@@ -1,6 +1,7 @@
 package com.example.bookgrim.story.service;
 
 import com.example.bookgrim.common.exception.BadRequestException;
+import com.example.bookgrim.common.exception.BaseRuntimeException;
 import com.example.bookgrim.common.exception.ErrorCode;
 import com.example.bookgrim.common.service.AwsS3Service;
 import com.example.bookgrim.story.domain.Page;
@@ -35,6 +36,7 @@ import reactor.netty.http.client.HttpClient;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -64,7 +66,7 @@ public class PageService {
     ) throws IOException {
 
         Story story = storyRepository.findById(storyId).orElseThrow(
-                ()->new BadRequestException(
+                ()->new BaseRuntimeException(
                         ErrorCode.NOT_FOUND_USER,
                         "Story를 찾을 수 없습니다."
                 )
@@ -83,25 +85,15 @@ public class PageService {
 
         ArrayList<String> grammar = checkGrammar(pageCreateReqDto.getContent());
         if ( !grammar.isEmpty() ) {
-            JSONObject res = new JSONObject();
-            JSONArray arr = new JSONArray();
-
+            ArrayList<String> spellList = new ArrayList<String>();
             for (String s :grammar){
                 System.out.println(s);
                 JSONObject obj = new JSONObject();
-                String[] result = s.split(" ");
-                obj.put("idx",result[0]);
-                obj.put("origin",result[1]);
-                obj.put("spell",result[2]);
-                arr.put(obj);
+                spellList.add(s);
+                System.out.println(s);
             }
 
-            res.put("spellList", arr);
-
-            throw new BadRequestException(
-                    ErrorCode.INVALID_INPUT_VALUE,
-                    res.toString()
-            );
+            return new PageResponseDto("", 0, "",String.join(",",spellList ));
         }
 
         byte[] page_img = createPageIllustration("test",

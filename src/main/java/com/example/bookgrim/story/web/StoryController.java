@@ -1,5 +1,7 @@
 package com.example.bookgrim.story.web;
 
+import com.example.bookgrim.common.exception.BaseRuntimeException;
+import com.example.bookgrim.common.exception.ErrorCode;
 import com.example.bookgrim.story.dto.PageCreateReqDto;
 import com.example.bookgrim.story.dto.PageResponseDto;
 import com.example.bookgrim.story.dto.StoryCreateReqDto;
@@ -43,14 +45,19 @@ public class StoryController {
     }
 
     @PostMapping("/{storyId}")
+    @ResponseStatus(value = HttpStatus.CREATED)
     public PageResponseDto createPage(
             HttpServletRequest response,
             @PathVariable String storyId,
             @RequestPart(value="value") PageCreateReqDto pageCreateReqDto,
             @RequestPart(value="background") MultipartFile back,
             @RequestPart(value="character")MultipartFile character
-    ) throws IOException {
-        return this.pageService.createPage(storyId, pageCreateReqDto,back, character);
+    )  {
+        try {
+            return this.pageService.createPage(storyId, pageCreateReqDto,back, character);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @GetMapping("")
