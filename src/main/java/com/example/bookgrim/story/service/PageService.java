@@ -73,8 +73,8 @@ public class PageService {
         );
 
         //로컬 위치
-//        String img_path = "E:\\2023.1\\캡스톤\\GRIM_Backend\\src\\main\\resources\\";
-        String img_path = "/home/ubuntu/cache/";
+        String img_path = "E:\\2023.1\\캡스톤\\GRIM_Backend\\src\\main\\resources\\";
+//        String img_path = "/home/ubuntu/cache/";
 
 
         File back = new File(img_path+background.getOriginalFilename());
@@ -96,11 +96,20 @@ public class PageService {
             return new PageResponseDto("", 0, "",String.join(",",spellList ));
         }
 
-        byte[] page_img = createPageIllustration("test",
+        // for test feauture
+        List<String> features = new ArrayList<>();
+        features.add("running");
+        features.add("happy");
+
+        String featureStr = features.toString();
+        //
+
+        byte[] page_img = createPageIllustration(
                 img_path + background.getOriginalFilename(),
                 img_path + character.getOriginalFilename(),
                 pageCreateReqDto.getX(),
-                pageCreateReqDto.getY());
+                pageCreateReqDto.getY(),
+                pageCreateReqDto.getCharacterPrompt().toString());
         Path paths = Paths.get(img_path + "output.png");
         Files.write(paths, page_img);
         String imgUrl = awsS3Service.uploadImage(page_img, storyId+"_"+pageCreateReqDto.getPageNum()+".png");
@@ -159,7 +168,9 @@ public class PageService {
         return response;
     }
 
-    public byte[] createPageIllustration(String prompt, String backpath, String frontpath, int x, int y) throws IOException {
+
+    public byte[] createPageIllustration(String backpath, String frontpath, int x, int y, String features) throws IOException {
+
         URI uri = URI.create("http://35.215.56.131:8080/api/createPage");
         log.info(backpath);
         log.info(frontpath);
@@ -167,9 +178,9 @@ public class PageService {
         Resource back_img = new FileSystemResource(backpath);
         Resource charac_img = new FileSystemResource(frontpath);
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
-        builder.part("prompt",prompt);
         builder.part("x",x);
         builder.part("y",y);
+        builder.part("feature", features);
         builder.part("back", back_img).header("Content-Disposition",
                 "form-data; name= back; filename=" + back_img.getFilename());
         builder.part("character",charac_img).header("Content-Disposition",
