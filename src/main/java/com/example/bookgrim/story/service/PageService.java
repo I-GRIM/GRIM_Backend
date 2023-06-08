@@ -73,8 +73,8 @@ public class PageService {
         );
 
         //로컬 위치
-        String img_path = "E:\\2023.1\\캡스톤\\GRIM_Backend\\src\\main\\resources\\";
-//        String img_path = "/home/ubuntu/cache/";
+//        String img_path = "E:\\2023.1\\캡스톤\\GRIM_Backend\\src\\main\\resources\\";
+        String img_path = "/home/ubuntu/cache/";
 
 
         File back = new File(img_path+background.getOriginalFilename());
